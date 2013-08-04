@@ -143,6 +143,34 @@ class ComponentSpec extends FunSpec with ShouldMatchers with Slf4jLogger {
       startupResult.isFailure should be(true)
     }
 
+    it("requires a componentObject when the state is not ComponentNotConstructed or ComponentStopped ") {
+      Component[ComponentNotConstructed, CompA]("CompA", new CompALifeCycle())
+      Try {
+        Component[ComponentNotConstructed, CompA]("CompA", new CompALifeCycle(), Some(CompA(constructed :: Nil)))
+      }.isFailure should be(true)
+
+      Component[ComponentStopped, CompA]("CompA", new CompALifeCycle())
+      Try {
+        Component[ComponentStopped, CompA]("CompA", new CompALifeCycle(), Some(CompA(constructed :: Nil)))
+      }.isFailure should be(true)
+
+      Component[ComponentConstructed, CompA]("CompA", new CompALifeCycle(), Some(CompA(constructed :: Nil)))
+      Try {
+        Component[ComponentConstructed, CompA]("CompA", new CompALifeCycle())
+      }.isFailure should be(true)
+
+      Component[ComponentInitialized, CompA]("CompA", new CompALifeCycle(), Some(CompA(constructed :: Nil)))
+      Try {
+        Component[ComponentInitialized, CompA]("CompA", new CompALifeCycle())
+      }.isFailure should be(true)
+
+      Component[ComponentStarted, CompA]("CompA", new CompALifeCycle(), Some(CompA(constructed :: Nil)))
+      Try {
+        Component[ComponentStarted, CompA]("CompA", new CompALifeCycle())
+      }.isFailure should be(true)
+
+    }
+
   }
 
 }

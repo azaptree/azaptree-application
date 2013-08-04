@@ -257,15 +257,15 @@ class ApplicationSpec extends FunSpec with ShouldMatchers {
     app.shutdown()
 
     val start = System.currentTimeMillis()
-    while (compRegisteredCount != comps.size && componentShutdownEventCount != (comps.size-1) && componentShutdownFailedEventCount != 1) {
+    while (compRegisteredCount != comps.size && componentShutdownEventCount != (comps.size - 1) && componentShutdownFailedEventCount != 1) {
       Thread.`yield`()
       if (System.currentTimeMillis() - start > 1000) {
-        fail(s"""expecting compRegisteredCount to be ${comps.size}, componentShutdownEventCount to be ${comps.size -1} and componentShutdownFailedEventCount to be 1, but 
+        fail(s"""expecting compRegisteredCount to be ${comps.size}, componentShutdownEventCount to be ${comps.size - 1} and componentShutdownFailedEventCount to be 1, but 
     	    | compRegisteredCount = ${compRegisteredCount} 
     	    | componentShutdownEventCount = ${componentShutdownEventCount}
     	    | componentShutdownFailedEventCount = ${componentShutdownFailedEventCount}""".stripMargin)
       }
-    }    
+    }
   }
 
   it("can return the component shutdown order") {

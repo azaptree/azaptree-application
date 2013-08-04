@@ -16,20 +16,20 @@ import reflect.runtime.universe._
  *
  * A Component also lists its health checks.
  */
-case class Component[S <: ComponentState: TypeTag, A](
+case class Component[S <: ComponentState, A](
     name: String,
     componentLifeCycle: ComponentLifeCycle[A],
     componentObject: Option[A] = None,
     dependsOn: Option[Iterable[Component[_, _]]] = None,
-    healthChecks: Option[List[ApplicationHealthCheck]] = None) {
+    healthChecks: Option[List[ApplicationHealthCheck]] = None)(implicit ev: TypeTag[S]) {
 
   {
-    val state = typeOf[S]
-    if (state =:= typeOf[ComponentNotConstructed] || state =:= typeOf[ComponentStopped]) {
-      require(componentObject.isEmpty, "when ComponentState is ComponentNotConstructed, there should be no componentObject")
-    } else {
-      require(componentObject.isDefined, s"when ComponentState is ${state}, then componentObject is required")
+    typeOf[S] match {
+      case state if (state =:= typeOf[ComponentNotConstructed] || state =:= typeOf[ComponentStopped]) =>
+        require(componentObject.isEmpty, "when ComponentState is ${state}, there should be no componentObject")
+      case state => require(componentObject.isDefined, s"when ComponentState is ${state}, then componentObject is required")
     }
+
   }
 
   def startup(): Component[ComponentStarted, A] = {
