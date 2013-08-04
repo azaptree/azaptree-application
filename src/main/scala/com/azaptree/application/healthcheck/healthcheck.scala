@@ -3,9 +3,7 @@ package com.azaptree.application.healthcheck
 import com.azaptree.concurrent.TaskSchedule
 import com.typesafe.config.Config
 
-case class HealthCheck(config: HealthCheckConfig)
-
-case class HealthCheckConfig(
+case class HealthCheck(
     group: String = "",
     name: String,
     description: Option[String] = None,

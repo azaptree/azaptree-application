@@ -32,7 +32,7 @@ package object healthcheck {
         try {
           val (healthScore, info) = scorer(healthCheck)
           val end = System.currentTimeMillis()
-          val healthCheckIndicator = healthCheck.config.computeHealthCheckIndicator(healthScore)
+          val healthCheckIndicator = healthCheck.computeHealthCheckIndicator(healthScore)
           HealthCheckResult(
             healthCheck = healthCheck,
             executionStart = start,
