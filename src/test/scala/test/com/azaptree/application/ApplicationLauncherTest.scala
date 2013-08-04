@@ -10,7 +10,7 @@ import com.azaptree.application.healthcheck._
 import com.typesafe.config.ConfigFactory
 import TestApplicationLauncher._
 import com.azaptree.nio.file.FileWatcherService
-import com.azaptree.application.pidFile.ApplicationPidFile
+import com.azaptree.application.extensions.ApplicationPidFile
 import com.azaptree.application.ApplicationExtension
 import com.azaptree.application.ApplicationExtensionComponentLifeCycle
 import java.io.File

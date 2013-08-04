@@ -1,4 +1,4 @@
-package com.azaptree.application.pidFile
+package com.azaptree.application.extensions
 
 import com.azaptree.application.ApplicationExtension
 import java.io.File
