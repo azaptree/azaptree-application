@@ -26,6 +26,7 @@ import scala.util.Success
 import scala.util.Try
 import com.azaptree.application.event._
 import com.azaptree.application.component._
+import com.azaptree.logging.Slf4jLogger
 
 /**
  * Manages an Application and HealthChecks.
@@ -43,20 +44,27 @@ import com.azaptree.application.component._
  * </ul>
  *
  */
-class ApplicationService(asyncEventBus: Boolean = true) {
+class ApplicationService(asyncEventBus: Boolean = true) extends Slf4jLogger {
 
   sys.addShutdownHook(() => stop())
 
-  private[this] lazy val log = LoggerFactory.getLogger("com.azaptree.application.ApplicationService")
+  @volatile
+  private[this] var _scheduledExecutorService: ScheduledExecutorService = _
 
-  private[this] lazy val scheduledExecutorService: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
-    ConfigurableThreadFactory(threadBaseName = Some("ApplicationService"), daemon = Some(true), uncaughtExceptionHandler = Some(new Thread.UncaughtExceptionHandler() {
-      override def uncaughtException(t: Thread, e: Throwable) = {
+  private[this] def scheduledExecutorService(): ScheduledExecutorService = {
+    if (_scheduledExecutorService == null) {
+      _scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
+        ConfigurableThreadFactory(threadBaseName = Some("ApplicationService"), daemon = Some(true), uncaughtExceptionHandler = Some(new Thread.UncaughtExceptionHandler() {
+          override def uncaughtException(t: Thread, e: Throwable) = {
 
-        val threadName = t.getName()
-        log.error(s"Scheduled task failed on thread: $threadName", e);
-      }
-    })))
+            val threadName = t.getName()
+            log.error(s"Scheduled task failed on thread: $threadName", e);
+          }
+        })))
+    }
+
+    _scheduledExecutorService
+  }
 
   @volatile
   private[this] var healthChecks: Option[List[ApplicationHealthCheck]] = None
@@ -314,6 +322,9 @@ class ApplicationService(asyncEventBus: Boolean = true) {
         }
       }
 
+      if (scheduledExecutorService == null) {
+
+      }
       scheduleAppLevelHealthChecks()
     }
   }
@@ -322,6 +333,11 @@ class ApplicationService(asyncEventBus: Boolean = true) {
     synchronized {
       app = app.shutdown()
       cancelScheduledAppLevelHealthChecks()
+
+      if (_scheduledExecutorService != null) {
+        _scheduledExecutorService.shutdown()
+        _scheduledExecutorService = null
+      }
     }
   }
 

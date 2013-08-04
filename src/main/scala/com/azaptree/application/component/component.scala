@@ -49,11 +49,11 @@ case class Component[S <: ComponentState, A](
 }
 
 sealed trait ComponentState
-sealed trait ComponentNotConstructed extends ComponentState
-sealed trait ComponentConstructed extends ComponentState
-sealed trait ComponentInitialized extends ComponentState
-sealed trait ComponentStarted extends ComponentState
-sealed trait ComponentStopped extends ComponentState
+sealed class ComponentNotConstructed extends ComponentState
+sealed class ComponentConstructed extends ComponentState
+sealed class ComponentInitialized extends ComponentState
+sealed class ComponentStarted extends ComponentState
+sealed class ComponentStopped extends ComponentState
 
 /**
  * Knows how to manage the lifecycle for a Component
