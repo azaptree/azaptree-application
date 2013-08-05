@@ -138,7 +138,7 @@ class ApplicationServiceSpec extends FunSpec with ShouldMatchers {
     group = "GROUP-2", name = "appHealthCheck3",
     config = Some(ConfigFactory.parseString("""compName = "CompC" """)))("appHealthCheck3")
 
-  val checkCompStartedScorer: (ApplicationService, HealthCheck) => (Int, Option[String]) = (appService, healthCheck) => {
+  val checkCompStartedScorer: (ApplicationService, HealthCheck) => (Short, Option[String]) = (appService, healthCheck) => {
     val compName = healthCheck.config.get.getString("compName")
     if (appService.isComponentStarted(compName)) (100, None) else (0, Some(s"$compName is not started"))
   }
@@ -648,7 +648,7 @@ class ApplicationServiceSpec extends FunSpec with ShouldMatchers {
 
         var healthCheckRunCount = 0
 
-        val healthCheckScorer: (ApplicationService, HealthCheck) => (Int, Option[String]) = (appService, healthCheck) => {
+        val healthCheckScorer: (ApplicationService, HealthCheck) => (Short, Option[String]) = (appService, healthCheck) => {
           log.info("RUNNING HEALTHCHECK: \n" + healthCheck)
           healthCheckRunCount += 1
           (100, None)

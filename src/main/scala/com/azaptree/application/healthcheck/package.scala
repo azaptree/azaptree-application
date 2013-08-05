@@ -16,7 +16,7 @@ package object healthcheck {
   /**
    * Performs the actual health check and returns a health check score and an optional message.
    */
-  type HealthCheckScorer = (HealthCheck) => (Int, Option[String])
+  type HealthCheckScorer = (HealthCheck) => (Short, Option[String])
 
   /**
    * Consists of a HealthCheck and the corresponding HealthCheckRunner which knows how to run the health check
