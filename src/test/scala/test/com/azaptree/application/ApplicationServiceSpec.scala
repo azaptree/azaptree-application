@@ -4,6 +4,7 @@ import org.scalatest.FunSpec
 import org.scalatest.matchers.ShouldMatchers
 import com.azaptree.application.ApplicationService
 import com.azaptree.application.component._
+import com.azaptree.application.component.ComponentState._
 import com.azaptree.application.healthcheck._
 import com.typesafe.config.ConfigFactory
 import ApplicationServiceSpec._

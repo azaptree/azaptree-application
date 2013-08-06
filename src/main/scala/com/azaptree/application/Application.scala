@@ -10,6 +10,7 @@ import scala.util.Success
 import scala.util.Failure
 import com.azaptree.application.component._
 import com.azaptree.application.event._
+import com.azaptree.application.component.ComponentState._
 
 object Application {
 

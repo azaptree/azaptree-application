@@ -1,17 +1,15 @@
 package test.com.azaptree.application.component
 
-import com.azaptree.application.component.ComponentInitialized
-import com.azaptree.application.component.ComponentStopped
 import com.azaptree.application.component.ComponentLifeCycle
 import org.scalatest.matchers.ShouldMatchers
-import com.azaptree.application.component.ComponentStarted
 import com.azaptree.application.component.Component
 import org.scalatest.FunSpec
-import com.azaptree.application.component.ComponentConstructed
-import com.azaptree.application.component.ComponentNotConstructed
+import com.azaptree.application.component.ComponentState._
 import ComponentSpec._
 import scala.util.Try
 import com.azaptree.logging.Slf4jLogger
+import scala.util.Success
+import scala.util.Failure
 
 object ComponentSpec {
   val started = "ComponentStarted"
@@ -120,7 +118,9 @@ class ComponentSpec extends FunSpec with ShouldMatchers with Slf4jLogger {
       compAStopped.componentObject.isEmpty should be(true)
     }
 
-    it("the ComponentLifeCycle create(), init(), and start() must return a Component that has a componentObject instance") {
+    // with scala 2.10 there is a threadsafety issue with reflection, which sometimes causes typeOf to not return the correct value
+    // this happens to often when running unit test with SBT. So, this functionality has been removed from Component
+    ignore("the ComponentLifeCycle create(), init(), and start() must return a Component that has a componentObject instance") {
       var compA = Component[ComponentNotConstructed, CompA]("CompA", new InvalidCreateCompALifeCycle())
       var startupResult = Try {
         compA.startup()
@@ -143,10 +143,13 @@ class ComponentSpec extends FunSpec with ShouldMatchers with Slf4jLogger {
       startupResult.isFailure should be(true)
     }
 
-    it("requires a componentObject when the state is not ComponentNotConstructed or ComponentStopped ") {
+    // with scala 2.10 there is a threadsafety issue with reflection, which sometimes causes typeOf to not return the correct value
+    // this happens to often when running unit test with SBT. So, this functionality has been removed from Component
+    ignore("requires a componentObject when the state is not ComponentNotConstructed or ComponentStopped ") {
       Component[ComponentNotConstructed, CompA]("CompA", new CompALifeCycle())
-      Try {
-        Component[ComponentNotConstructed, CompA]("CompA", new CompALifeCycle(), Some(CompA(constructed :: Nil)))
+      var result = Try {
+        val comp = Component[ComponentNotConstructed, CompA]("CompA", new CompALifeCycle(), Some(CompA(constructed :: Nil)))
+        log.info("{}", comp)
       }.isFailure should be(true)
 
       Component[ComponentStopped, CompA]("CompA", new CompALifeCycle())

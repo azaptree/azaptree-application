@@ -2,6 +2,7 @@ package com.azaptree.application.healthcheck
 
 import com.azaptree.concurrent.TaskSchedule
 import com.typesafe.config.Config
+import HeathCheckIndicatorThreshold._
 
 case class HealthCheck(
     group: String = "",
@@ -33,16 +34,18 @@ sealed trait HeathCheckIndicatorThreshold {
   val minScore: Short
 }
 
-case class GreenHeathCheckIndicatorThreshold(minScore: Short) extends HeathCheckIndicatorThreshold {
-  val indicator = GREEN
-}
+object HeathCheckIndicatorThreshold {
+  case class GreenHeathCheckIndicatorThreshold(minScore: Short) extends HeathCheckIndicatorThreshold {
+    val indicator = GREEN
+  }
 
-case class YellowHeathCheckIndicatorThreshold(minScore: Short) extends HeathCheckIndicatorThreshold {
-  val indicator = YELLOW
-}
+  case class YellowHeathCheckIndicatorThreshold(minScore: Short) extends HeathCheckIndicatorThreshold {
+    val indicator = YELLOW
+  }
 
-case class RedHeathCheckIndicatorThreshold(minScore: Short) extends HeathCheckIndicatorThreshold {
-  val indicator = RED
+  case class RedHeathCheckIndicatorThreshold(minScore: Short) extends HeathCheckIndicatorThreshold {
+    val indicator = RED
+  }
 }
 
 sealed trait HealthCheckIndicator

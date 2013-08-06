@@ -2,6 +2,7 @@ package com.azaptree.application
 
 import scala.language.existentials
 import com.azaptree.application.component._
+import com.azaptree.application.component.ComponentState._
 
 trait ApplicationEvent
 

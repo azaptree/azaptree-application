@@ -4,6 +4,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import com.azaptree.application.ApplicationLauncher
 import com.azaptree.application.ApplicationService
 import com.azaptree.application.component._
+import com.azaptree.application.component.ComponentState._
 import com.azaptree.application.healthcheck._
 import com.azaptree.application.healthcheck.HealthCheck
 import com.azaptree.application.healthcheck._

@@ -1,6 +1,7 @@
 package com.azaptree.application
 
 import com.azaptree.application.component._
+import com.azaptree.application.component.ComponentState._
 
 trait ApplicationExtension {
 

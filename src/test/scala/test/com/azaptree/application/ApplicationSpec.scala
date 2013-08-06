@@ -3,6 +3,7 @@ package test.com.azaptree.application
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FunSpec
 import com.azaptree.application.component._
+import com.azaptree.application.component.ComponentState._
 import ApplicationSpec._
 import com.azaptree.application.Application
 import com.azaptree.application.ComponentStartedEvent

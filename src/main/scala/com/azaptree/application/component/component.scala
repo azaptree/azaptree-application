@@ -4,6 +4,7 @@ import com.azaptree.logging.Slf4jLogger
 import com.azaptree.application.healthcheck._
 import reflect.runtime.universe._
 import scala.util.control.Breaks._
+import ComponentState._
 
 /**
  * Every Component has a unique name. The Component transitions between ComponentStates via its ComponentLifeCycle :
@@ -22,27 +23,7 @@ case class Component[S <: ComponentState, A](
     componentLifeCycle: ComponentLifeCycle[A],
     componentObject: Option[A] = None,
     dependsOn: Option[Iterable[Component[_, _]]] = None,
-    healthChecks: Option[List[ApplicationHealthCheck]] = None)(implicit ev: TypeTag[S]) {
-
-  try {
-    typeOf[S] match {
-      case state if (state =:= typeOf[ComponentNotConstructed] || state =:= typeOf[ComponentStopped]) =>
-        require(componentObject.isEmpty, "when ComponentState is ${state}, there should be no componentObject")
-      case state =>
-        require(componentObject.isDefined, s"when ComponentState is ${state}, then componentObject is required")
-    }
-  } catch {
-    case e: IllegalArgumentException =>
-      // with scala 2.10 there is a threadsafety issue with reflection, which sometimes causes typeOf to not return the correct value
-      // TODO: when this issue is resolved, this try-catch can be removed
-      Thread.`yield`
-      typeOf[S] match {
-        case state if (state.toString() == classOf[ComponentNotConstructed].getName() || state.toString() == classOf[ComponentStopped].getName()) =>
-          require(componentObject.isEmpty, "when ComponentState is ${state}, there should be no componentObject")
-        case state =>
-          require(componentObject.isDefined, s"when ComponentState is ${state}, then componentObject is required")
-      }
-  }
+    healthChecks: Option[List[ApplicationHealthCheck]] = None) {
 
   def startup(): Component[ComponentStarted, A] = {
     assert(componentObject.isEmpty, "It is invalid to startup a Component that is not in the NotConstructed state or already has some component object")
@@ -61,11 +42,14 @@ case class Component[S <: ComponentState, A](
 }
 
 sealed trait ComponentState
-sealed class ComponentNotConstructed extends ComponentState
-sealed class ComponentConstructed extends ComponentState
-sealed class ComponentInitialized extends ComponentState
-sealed class ComponentStarted extends ComponentState
-sealed class ComponentStopped extends ComponentState
+
+object ComponentState {
+  sealed class ComponentNotConstructed extends ComponentState
+  sealed class ComponentConstructed extends ComponentState
+  sealed class ComponentInitialized extends ComponentState
+  sealed class ComponentStarted extends ComponentState
+  sealed class ComponentStopped extends ComponentState
+}
 
 /**
  * Knows how to manage the lifecycle for a Component
